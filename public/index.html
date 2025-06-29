@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube Downloader</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2rem; background: #f0f0f0; }
+    input { width: 80%; padding: 0.5rem; }
+    button { padding: 0.5rem 1rem; margin: 0.5rem; }
+    .video-card { background: #fff; margin: 1rem auto; padding: 1rem; border-radius: 10px; max-width: 600px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    img { max-width: 100%; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>🔍 YouTube Downloader</h1>
+  <input type="text" id="searchInput" placeholder="Search YouTube videos..." />
+  <button onclick="search()">Search</button>
+
+  <div id="results"></div>
+
+  <script>
+    async function search() {
+      const query = document.getElementById("searchInput").value;
+      const response = await fetch(`/search?query=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      data.results.forEach(video => {
+        const html = \`
+          <div class="video-card">
+            <h3>\${video.title}</h3>
+            <img src="\${video.thumbnail}" alt="Thumbnail" />
+            <p>Duration: \${video.duration}</p>
+            <p>By: \${video.author}</p>
+            <a href="\${video.download_video}"><button>⬇️ Download MP4</button></a>
+            <a href="\${video.download_audio}"><button>🎧 Download MP3</button></a>
+          </div>
+        \`;
+        results.innerHTML += html;
+      });
+    }
+  </script>
+</body>
+</html>
